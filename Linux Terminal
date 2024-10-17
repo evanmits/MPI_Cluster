@@ -1,0 +1,78 @@
+//Update & Upgrade
+:~$ sudo apt update
+:~$ sudo apt upgrade
+:~$ apt list --upgradable
+:~$ sudo apt install (package name)
+
+//Install OpenMPI (Manager & Workers)
+:~$ apt list -a openmpi-bin
+:~$ sudo apt-get install openmpi-bin
+:~$ sudo apt-get install build-essential
+:~$ sudo apt-get install mpich
+
+//IPs Update
+:~$ sudo apt install net-tools
+:~$ ifconfig
+:~$ nproc
+
+//Hosts file Update to both Manager & Workers 
+:~$ sudo apt install krb5-user
+:~$ sudo -i gedit /(path)
+
+//Make all sudoers
+:~$ sudo usermod -aG sudo (username)
+
+//Install SSH (Manager & Workers).
+:~$ sudo apt-get install openssh-server
+:~$ ssh (worker or IP)
+
+//Generate SSH Key (only in Manager)
+:~$ cd .ssh
+:~$ ssh-key -t rsa
+:~$ ls
+:~$ sudo scp id_rsa.pub ubuntuadmin@(worker):~/.ssh
+
+//Check copied files in Workers
+:~$ ssh (worker or IP)
+:~$ cd .ssh
+:~$ cat id_rsa.pub >> authorized_keys
+
+//General Check Point
+:~$ ssh (IP worker or worker’s name)
+:~$ exit
+
+//Install NFS (Manager)
+:~$ sudo apt-get install
+
+//Install NFS (Workers)
+:~$ sudo apt-get install nfs-common
+
+//Create Root NFS Directory (Manager)
+:~$ sudo mkdir -p /(root path)
+:~$ sudo chown nobody:nogroup /(root path)
+:~$ sudo chmod 777 /(root path)
+
+//Activate pass to Workers from Manager
+:~$ sudo -i gedit /(root path) //path: /etc/exports
+/path. . . {worker1 IP} (rw,sync,no_subtree_check)
+/path. . . {worker2 IP} (rw,sync,no_subtree_check)
+/path. . . {worker3 IP} (rw,sync,no_subtree_check)...
+
+//Mount NFS Files - Share Temporarily (Manager)
+:~$ sudo exportfs -a
+:~$ sudo systemctl restart nfs-kernel-server 
+:~$ sudo ufw allow
+
+//Mount NFS - Permanentrly (Workers)
+:~$ sudo mkdir -p /(local path)
+:~$ sudo mount IP of NFS server:/folder path on server /local path
+:~$ sudo -i gedit /(root path) //path: /etc/fstab
+/IP of NFS server:/folder path on server /local path nfs defaults 0 0
+
+//Execute Code (Manager)
+:~$ cd /path
+:~$ nano (code file name).c
+:~$ mpicc -o (executable file name) (code file name).c
+:~$ mpiexec -np N ./(executable file name)
+:~$ mpiexec -np K -(hostfile name) (workerN,localhost)./(executable file name)
+
